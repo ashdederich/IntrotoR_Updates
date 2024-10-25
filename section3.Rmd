@@ -1,0 +1,774 @@
+---
+title: 'Introduction to R^[`r library(r2symbols) ; format(paste(symbol("copyright") , " - Wim R.M. Cardoen, 2022 - The content can neither be copied nor distributed without the **explicit** permission of the author."))`]'
+subtitle: 'Part 3: Matrices/Arrays & Special Data Types'
+author: "Wim R.M. Cardoen"
+date: "Last updated: `r format(Sys.time(), ' %2m/%2d/%Y @ %2H:%2M:%2S')`"
+output:
+  pdf_document:
+    highlight: tango
+    df_print: tibble
+    toc: true
+    toc_depth: 5
+    number_sections: True
+    extra_dependencies:
+    - amsfonts
+    - amsmath
+    - xcolor
+    - hyperref
+bibliography: [latex/intro.bib]  
+csl: https://raw.githubusercontent.com/citation-style-language/styles/master/research-institute-for-nature-and-forest.csl
+urlcolor: violet
+---
+
+# Control Flow, Loops, if Statements, and Functions
+
+# Control Flow
+
+* Controlling the flow of program execution is, essentially, all a programmer does.
+* **Control Flow** refers to the order in which a computer program executes statements, instructions, and function calls.
+
+
+```{R, echo=TRUE, comment=''}
+value <- 5
+if(value <=5){
+  print("Good news!")
+}
+```
+* We can think of control flow like reading a book- we start at the top and read to the bottom of the page. The same can be said for control flow, or code execution.
+* Look at the example above. The value gets set to 7 first, and then the if statement checks if the value is less than or equal to 5.
+* The { } indicate what is called a *block*, which is a group of lines of code that all get executed in a group.
+* We can expand on blocks with if statements, loops, and functions to perform specific tasks. Let's start with if statements.
+
+# If Statements 
+
+* An if statement is a block of code that, when executed, returns either TRUE or FALSE.
+* We can think of if statements like 'if/then' statements, such as 'If this thing is TRUE, then do this.' Look at the example below to see this in action.
+
+```{R, echo=TRUE, comment=''}
+value <- 5
+if(value < 5){
+  print("Less than five!")
+} else {
+  print("Greater than or equal to five!")
+}
+```
+
+* In the above example, there are two *blocks*, the first block being the intial if{} statement, the second being the else{} statement.
+* If and else statements can go hand-in-hand. An else statement requires there to be an initial if statement, but an if statement does not require an else statement.
+  * In the case of an if with no else statement, nothing will happen if the inital if{} returns FALSE.
+
+
+# Loops
+
+* Computers are most helpful for automating repetitive tasks.
+* We can use loops in R to automatically repeat these tasks
+* Here is an example of a *while* loop. While loops are helpful to repeat a task until a condition is met. Consider the example below:
+
+```{R, echo=TRUE, comment=''}
+value<-0
+while(value <= 10){
+  value <- value + 1
+}
+print("Finished!")
+```
+
+* In the above example, **value** is set to 0. The *while* loop continually adds 1 to **value** until value=10 (the **condition**). 
+* Each time the block in a loop is run, we call it an *iteration* of the loop.
+* Once the while loop finishes, the *control flow* dictates that the print() statement will be the next code to be executed.
+
+* While loops are dangerous because it is easy to get the computer stuck in an *infinite loop*. Infinite loops are created when the condition to terminate the loop is never met.
+* Because of the possibility of accidental infinite loops, most programmers tend to use **for loops** whenever possible:
+
+```{R, echo=TRUE, comment=''}
+for(i in 1:10){
+  print(i)
+}
+```
+
+* For loops are different than while loops because there is no condition to be met to escape the loop - instead, there is a set amount of operations that are run.
+* In the above, the loop will execute 10 times.
+* The variable, *i*, is called a **loop index**.
+* We can also put a loop within a loop - though this is slow and, if you are thinking about doing this, you should look instead into R's *apply* family (we will talk about this later).
+
+## Loop Examples
+
+* Nested Loops - not recommended!
+```{R, echo=TRUE, comment=''}
+for(i in 1:10){
+  for (j in 1:20){
+    myvar<-i+j
+  }
+}
+```
+
+```{R, echo=TRUE, comment=''}
+var<-20
+for(i in 1:length(var)){
+  print(i)
+}
+```
+
+* You can use the index variable to subset
+```{R, echo=TRUE, comment=''}
+var1<-c(1,3,5,7,9)
+for(i in 1:length(var1)){
+  var2<-2*var1[i]
+}
+var2
+```
+
+* more on subsetting in loops
+```{R, echo=TRUE, comment=''}
+unchanged<-c("a","b","c")
+changed<-unchanged
+unchanged
+changed
+for(i in 1:length(changed)){
+  changed[i]<-toupper(changed[i])
+}
+identical(changed,unchanged)
+```
+
+# Functions
+
+* An R **Function** is one of the most fundamental concepts in R to understand and utilize.
+* A function in R is exactly what it sounds like - it is a block of code that performs some small unit of work and returns an output as a result 
+* A function is helpful if you find yourself performing a task in R more than once. If you have to repeat yourself, don't, just create a function!
+* Here is an example:
+
+```{R, echo=TRUE, comment=''}
+double<-function(x){
+  doubled<-x*2
+  return(doubled)
+}
+double(8)
+```
+
+* In the above function, called *double*, the purpose of the function is to double the input number given.
+
+## Function Arguments
+
+* All functions take *arguments*. 
+* Functions can take any number of arguments as input
+* You can set base values for arguments:
+
+```{R, echo=TRUE, comment=''}
+double<-function(x=4){
+  doubled<-x*2
+  return(doubled)
+}
+double() # takes the given value
+double(2) # replaced x=4 with x=2, the supplied argument
+```
+
+* It is important to keep functions *small*, meaning that each function should do one small task, not many small tasks. 
+  * This makes it easier to *debug* code.
+
+* When you call a function, you can also provide values for arguments using their names, much like you do with other R functions.
+
+```{R, echo=TRUE, comment=''}
+change.text<-function(text,before="Wim says",after="",upper=FALSE){
+  text<-paste(before,text,after)
+  if(upper){
+    text<-toupper(text)
+  }
+  return(text)
+}
+
+change.text("R is fun!")
+change.text(text="R is fun!",before="The CHPC says")
+change.text(text="R is fun!",before="The CHPC says",after="...and practice your R programming!")
+```
+
+/newpage
+
+$\texttt{"It is my experience that proofs involving matrices can be}\newline
+ \texttt{shortened by 50\% if one throws the matrices out" (Emil Artin)}$
+
+
+
+## Hash tables 
+ 
+A $\textbf{hash table}$ is a data structure which implements an associative array or dictionary.
+It is an abstract data which maps data to keys.
+
+* There are several ways to create one:
+  * Map names to an existing vector
+  * Add names when creating the vector
+* To remove the map, map the names to NULL
+
+## Hash tables/dictionaries
+
+We can also use hashes for matrices. We can select one or both dimensions.
+To create hashes, for:
+- rows: use $\textcolor{blue}{\textbf{rownames}}$
+- columns: use $\textcolor{blue}{\textbf{colnames}}$
+
+To remove the hash, use the $\textcolor{blue}{\textbf{NULL}}$ (like for vectors).
+
+### Examples
+```{R, echo=TRUE, comment=''}
+A1 <- c(0      , 5471.52, 5091.57, 5392.82, 
+        5416.45, 4584.33, 4904.83, 3851.73)
+A2 <- c(5471.52,       0, 1315.28,  927.35, 
+        1505.11,  944.40, 1157.42, 1945.42)
+A3 <- c(5091.57, 1315.28,       0, 2166.00, 
+        2724.01, 1571.76,  293.52, 1240.77)
+A4 <- c(5392.82,  927.35, 2166.00,       0,        
+         577.85,  973.23, 1947.28, 2422.32)
+A5 <- c(5416.45, 1505.11, 2724.01,  577.85,             
+              0, 1366.63, 2490.97, 2838.62)
+A6 <- c(4584.33,  944.40, 1571.76,  973.23, 
+        1366.63,       0, 1290.15, 1474.26)
+A7 <- c(4904.83, 1157.42,  293.52, 1947.28, 
+        2490.97, 1290.15,       0, 1064.41)
+A8 <- c(3851.73, 1945.42, 1240.77, 2422.32, 
+        2838.62, 1474.26, 1064.41,       0)
+```
+$\newline$
+```{R, echo=TRUE, comment=''}
+dist <- rbind(A1,A2,A3,A4,A5,A6,A7,A8)
+dist
+```
+
+$\newline$
+```{R, echo=TRUE, comment=''}
+# Adding hashes to both rows and columns 
+cities <- c("Anchorage","Atlanta","Austin","Baltimore","Boston", "Chicago", "Dallas","Denver")
+rownames(dist) <- cities
+colnames(dist) <- cities
+dist
+```
+$\newline$
+```{R, echo=TRUE, comment=''}
+dist["Chicago", "Denver"]
+dist["Austin", "Boston"]
+```
+
+
+
+### Examples
+
+* Creation of 2 independent vectors
+```{R, echo=TRUE, comment=''}
+capitals <- c("Albany", "Providence", "Hartford", "Boston", "Montpelier", "Concord", "Augusta")
+states <- c("NY", "RI", "CT", "MA", "VT", "NH", "ME")
+capitals
+states
+capitals[3]
+```
+$\newline$
+
+* Create the hashtable/dictionary
+```{R, echo=TRUE, comment=''}
+# Method 1
+names(capitals) <- states
+capitals
+capitals["MA"]
+names(capitals)
+```
+
+$\newline$
+
+```{R, echo=TRUE, comment=''}
+# Method 2
+phonecode <- c("801"="SLC", "206"="Seattle", "307"="Wyoming")
+phonecode
+phonecode["801"]
+```
+
+$\newline$
+
+* Dissociate the 2 vectors
+```{R, echo=TRUE, comment=''}
+names(capitals) <- NULL
+capitals
+```
+
+
+## NA (Not Available values)
+
+* $\textcolor{blue}{\textbf{NA}}$: stands for 'Not Available'/Missing values and has a length of $1$.$\newline$
+  There are in essence $4$ versions depending on the type:
+  - $\textcolor{blue}{\textbf{NA}}$ (logical - $\textbf{default}$)
+  - $\textcolor{blue}{\textbf{NA\_integer}}$ (integer)
+  - $\textcolor{blue}{\textbf{NA\_real}}$ (double precision)
+  - $\textcolor{blue}{\textbf{NA\_character}}$ (string)
+  
+  Under the hood, the version of NA is subjectd to $\textbf{coercion}$:$\newline$
+  $\textit{logical}$  $\rightarrow$  $\textit{integer}$  $\rightarrow$  $\textit{double}$  $\rightarrow$  $\textit{character}$
+
+* some functions e.g. $\textcolor{blue}{\textbf{mean()}}$ return (by default) NA if$\newline$
+  1 or more instances NA are present in a vector.  
+  
+* $\textcolor{blue}{\textbf{is.na()}}$: test a vector (element-wise) for NA values.$\newline$
+  $\textcolor{red}{\textbf{Do NOT use:}}$  
+   ```{R, echo=TRUE, results='hide', comment=''}
+   x == NA 
+   ```
+  $\textcolor{orange}{\textbf{but use INSTEAD:}}$
+  ```{R, echo=TRUE, results='hide', comment=''}
+  is.na(x)
+  ```
+  
+### Examples
+
+* Types of NA
+```{R, echo=TRUE, comment=''}
+x <- NA
+typeof(x)
+```
+$\newline$
+```{R, echo=TRUE, comment=''}
+# logical NA coerced to double precision NA
+x <- c(3.0, 5.0, NA)
+typeof(x[3])
+```
+$\newline$
+* Functions on a vector containing NA
+```{R, echo=TRUE, comment=''}
+mean(x)
+mean(x, na.rm=TRUE)
+```
+$\newline$
+* Check of the NA availability
+```{R, echo=TRUE, comment=''}
+x <- c(NA, 1, 2, NA)
+is.na(x)
+```
+
+$\newline$
+* Functions on a vector containing NA
+```{R, echo=TRUE, comment=''}
+mean(x)
+mean(x, na.rm=TRUE)
+```
+
+### Exercises
+
+* A family has installed a device to monitor their daily energy consumption (in kWh).$\newline$
+  When a measurement fails or is unavailable NA is recorded.
+
+  You can invoke the following code to generate the measurements generated by the device.
+  ```{R, echo=TRUE, comment=' ', results=FALSE}
+  dailyusage <- 30.0 + runif(365, min=0, max=5.0)
+  dailyusage[sample(1:365, sample(1:50,1), replace=FALSE)] <- NA
+  ```
+     - How many measurements failed?
+     - What is the average daily energy consumption (based on the non-failed) measurements?
+
+
+## NaN and infinities
+
+* $\textcolor{blue}{\textbf{NaN}}$ (only for numeric types!), and the infinties $\textcolor{blue}{\textbf{Inf}}$ and $\textcolor{blue}{\textbf{-Inf}}$ $\newline$
+  are part of the [IEEE 754 floating-point standard](https://ieeexplore.ieee.org/document/8766229).
+* To test whether you have:
+  - finite numbers: use $\textcolor{blue}{\textbf{is.finite()}}$
+  - infinite numbers: use $\textcolor{blue}{\textbf{is.infinite()}}$
+  - NaNs: use $\textcolor{blue}{\textbf{is.nan()}}$
+* Further:
+  - a $\textcolor{blue}{\textbf{NaN}}$ will return $\textcolor{blue}{\textbf{TRUE}}$ only when tested by $\textcolor{blue}{\textbf{is.nan()}}$
+  - a $\textcolor{blue}{\textbf{NA}}$ will return $\textcolor{blue}{\textbf{TRUE}}$ when tested by either $\textcolor{blue}{\textbf{is.nan()}}$ or $\textcolor{blue}{\textbf{is.na()}}$
+  
+### Examples
+
+* Infinities:
+
+```{R, echo=TRUE, comment=''}
+x <- 5.0/0.0
+x
+is.finite(x)
+is.infinite(x)
+is.nan(x)
+```
+
+$\newline$
+
+```{R, echo=TRUE, comment=''}
+y <- -5.0/0.0
+y
+is.finite(y)
+is.infinite(y)
+is.nan(y)
+```
+$\newline$
+```{R, echo=TRUE, comment=''}
+z <- x + y
+z
+typeof(z)
+is.finite(z)
+is.infinite(z)
+is.nan(z)
+```
+$\newline$
+
+* $\textcolor{blue}{\textbf{is.na()}}$ vs. $\textcolor{blue}{\textbf{is.nan()}}$:
+
+```{R, echo=TRUE, comment=''}
+# is.nan
+v <- c(NA, z, 5.0, log(-1.0))
+is.nan(v)
+```
+
+$\newline$
+
+```{R, echo=TRUE, comment=''}
+# is.na(): also includes NaN!
+v <- c(NA, z, 5.0, log(-1.0))
+is.na(v)
+```
+
+
+## Note on logical operators
+
+* $\textcolor{blue}{\textbf{\&}}$, $\textcolor{blue}{\textbf{|}}$, $\textcolor{blue}{\textbf{!}}$, $\textcolor{blue}{\textbf{xor()}}$: $\textbf{element-wise}$ operators on vectors (cfr. arithmetic operators)
+* $\textcolor{blue}{\textbf{\&\&}}$, $\textcolor{blue}{\textbf{||}}$: evaluated from $\textbf{left}$ to $\textbf{right}$ until result is determined.
+  
+### Examples
+
+* Vector operators ($\textcolor{blue}{\textbf{\&}}$, $\textcolor{blue}{\textbf{|}}$, $\textcolor{blue}{\textbf{!}}$ and $\textcolor{blue}{\textbf{xor()}}$)
+```{R, echo=TRUE, comment=''}
+x <- sample(x=1:10, size=10, replace=TRUE)
+x
+y <- sample(x=1:10, size=10, replace=TRUE)
+y
+```
+$\newline$
+```{R, echo=TRUE, comment=''}
+v1 <- (x<=3)
+v1
+```
+$\newline$
+```{R, echo=TRUE, comment=''}
+v2 <- (y>=7)
+v2
+```
+$\newline$
+```{R, echo=TRUE, comment=''}
+v1 & v2
+```
+$\newline$
+```{R, echo=TRUE, comment=''}
+v1 | v2
+```
+$\newline$
+```{R, echo=TRUE, comment=''}
+xor(v1, v2)
+```
+$\newline$
+```{R, echo=TRUE, comment=''}
+!v1
+```
+$\newline$
+
+### Exercises
+
+* Generate a random vector of integers using the following code:
+  ```{R, echo=TRUE,comment='', results=FALSE }
+  x <- sample(x=0:1000,size=100, replace=TRUE)
+  ```
+  - Invoke the above code to generate the vector $\texttt{x}$
+  - Find if there are any integers in the vector $\texttt{x}$ which can be divided by 4 and 6
+  - Find those numbers and their corresponding indices in the vector $\texttt{x}$.
+
+
+
+\newpage
+
+# Special Data Types (Factors and Date/Time types)
+
+Every $\texttt{R}$ object has attributes (i.e. properties or metadata). $\newline$
+They can be classified as:
+
+* $\textbf{intrinisic}$ properties e.g. $\textcolor{blue}{\textbf{length()}}$
+* $\textbf{external}$ properties (to be set by the user)
+
+## Attributes
+
+* can be get/retrieved using $\textcolor{blue}{\textbf{attributes()}}$.
+* can be set:
+  - individually using $\textcolor{blue}{\textbf{attr()}}$
+  - in generally using $\textcolor{blue}{\textbf{structure()}}$
+* some attributes can (also) be set/unset with $\textbf{special}$ functions: 
+  - names: $\textcolor{blue}{\textbf{names()}}$
+  - dimension: $\textcolor{blue}{\textbf{dim()}}$
+  - comment  : $\textcolor{blue}{\textbf{comment()}}$
+  - time series: $\textcolor{blue}{\textbf{tsp()}}$
+  - factor   : $\textcolor{blue}{\textbf{factor()}}$ (see next section)
+
+### Examples  
+
+* $1$ attribute:
+  ```{R, echo=TRUE, comment=''}
+  x <- 1:5 
+  x
+  attr(x, 'prop1') <- "hello"
+  attributes(x)
+  x
+  ```
+$\newline\newline$
+  ```{R, echo=TRUE, comment=''}
+  attr(x, 'prop1') <- NULL
+  attributes(x)
+  x
+  ```
+
+$\newline\newline\newline$
+
+* more than $1$ attribute:
+
+  ```{R, echo=TRUE, comment=''}
+  y <- 1:8
+  y
+  y <- structure(y, dim=c(2,4), tag="trial")
+  y
+  attributes(y)
+  typeof(y)
+  class(y)
+  ```
+  $\newline\newline$
+  ```{R, echo=TRUE, comment=''}
+  # Remove BOTH attributes
+  y <- structure(y, dim=NULL, tag=NULL)
+  y
+  attributes(y)
+  typeof(y)
+  class(y)
+  ```
+$\newline\newline$
+
+* $\textcolor{blue}{\textbf{names()}}$
+
+  ```{R,echo=TRUE,comment=''}
+  # Set the names attribute
+  capitals <- c("Salt Lake City", "Carson City", "Boise", "Santa Fe")
+  names(capitals) <- c("UT", "NV", "ID", "NM")
+  capitals
+  attributes(capitals)
+  ```
+$\newline$
+  ```{R,echo=TRUE,comment=''}
+  # Remove the names attribute
+  names(capitals) <- NULL
+  capitals
+  ```
+$\newline\newline$
+
+* $\textcolor{blue}{\textbf{dim()}}$
+
+  ```{R,echo=TRUE,comment=''}
+  x <- 1:12
+  x
+  typeof(x)
+  class(x)
+  ```
+$\newline\newline$
+  ```{R,echo=TRUE,comment=''}
+  # Set the dimension attribute
+  dim(x) <- c(3,4)
+  x
+  typeof(x)
+  class(x)
+  ```
+$\newline\newline$
+
+  ```{R,echo=TRUE,comment=''}
+  # Remove the dimension attribute
+  dim(x) <- NULL
+  x
+  typeof(x)
+  class(x)
+  ```
+* $\textcolor{blue}{\textbf{comment()}}$
+
+  ```{R,echo=TRUE,comment=''}
+  x <- structure(1:6, comment="My vector")
+  typeof(x)
+  class(x)
+  comment(x)
+  ```
+  
+## Factor variables (Categorical variables)  
+
+* Factor variables (factors, categorical variables) are 
+  discrete variables (i.e not continuous). $\newline$
+  The factors bear labels ($\textbf{levels}$) which are 
+  mapped into $\textbf{integers}$.
+  
+* Therefore, factors are stored as integer vector with $2$ attributes:
+  - $\textcolor{blue}{\textbf{class}}$= "factor"
+  - $\textcolor{blue}{\textbf{levels}}$: a vector with the "labels".
+  
+* By default ($\textbf{unordered}$) the labels are mapped $\textbf{alphabetically}$ to the integers.
+  We can $\textbf{impose}$ our own $\textbf{ordering}$ between integers and labels (levels).
+  
+* Useful functions:
+  - $\textcolor{blue}{\textbf{levels()}}$ : provides the levels of a factor
+  - $\textcolor{blue}{\textbf{table()}}$: returns the counts of each level
+  - $\textcolor{blue}{\textbf{is.factor()}}$: tests whether a variable is a factor variable
+  - $\textcolor{blue}{\textbf{is.ordered()}}$: tests whether a variable is an ordered factor variable 
+
+
+### Examples
+
+* Creation of an $\textbf{unordered}$ factor
+
+  ```{R,echo=TRUE,comment=''}
+  # Creation of an unordered factor
+  temp.data <- c("High","Low","VeryHigh","Low","VeryLow","Medium",
+                 "VeryHigh","VeryHigh","Low","Low","Medium","VeryHigh",
+                 "VeryHigh","VeryHigh","Low","High","VeryLow")
+  myfac.temp.data <- factor(temp.data)
+  myfac.temp.data
+  ```
+  
+  $\newline\newline$
+  
+  ```{R,echo=TRUE,comment=''}
+  # by default: the levels are stored ALPHABETICALLY (i.e. unordered)
+  levels(myfac.temp.data)
+  table(myfac.temp.data)
+  ```
+  
+  $\newline$
+  
+  ```{R,echo=TRUE,comment=''}
+  is.factor(myfac.temp.data)
+  is.ordered(myfac.temp.data)
+  ```
+  $\newline$
+
+* Creation of an $\textbf{ordered}$ factor
+
+  ```{R,echo=TRUE,comment=''}
+  # Creation of an unordered factor
+  temp.data <- c("High","Low","VeryHigh","Low","VeryLow","Medium",
+                 "VeryHigh","VeryHigh","Low","Low","Medium","VeryHigh",
+                 "VeryHigh","VeryHigh","Low","High","VeryLow")
+  myfac2.temp.data <- factor(temp.data, ordered=TRUE, 
+                             levels=c("VeryLow","Low","Medium","High","VeryHigh")) 
+  myfac2.temp.data
+  ```
+  
+  $\newline\newline$
+  
+  ```{R,echo=TRUE,comment=''}
+  # The ordering is NOW imposed
+  levels(myfac2.temp.data)
+  table(myfac2.temp.data)
+  ```
+  
+  $\newline\newline$
+  
+  ```{R,echo=TRUE,comment=''}
+  is.factor(myfac2.temp.data)
+  is.ordered(myfac2.temp.data)
+  ```
+  
+  $\newline\newline$
+  
+  ```{R,echo=TRUE,comment=''}
+  # Stripping a factor to the essentials: integer vector
+  attributes(myfac2.temp.data)
+  class(myfac2.temp.data) <- NULL
+  levels(myfac2.temp.data) <- NULL
+  myfac2.temp.data
+  ```
+
+
+
+## Dates and times in $\texttt{R}$.
+
+* $\textcolor{blue}{\textbf{Date}}$ class : 
+  - represents calendar dates
+  - built on top of doubles with class attribute 'Date'
+  - 0 : Jan 1. 1970 ($\href{https://en.wikipedia.org/wiki/Unix_time}{\textbf{Unix Epoch time}}$)
+  - $\textcolor{blue}{\textbf{as.Date()}}$: method to cast string to a Date
+* $\textcolor{blue}{\textbf{POSIXct}}$ and $\textcolor{blue}{\textbf{POSIXlt}}$ : date and time
+  - $\textcolor{blue}{\textbf{POSIXct}}$: stores date/time values as the #seconds since Jan. 1, 1970
+  - $\textcolor{blue}{\textbf{POSIXlt}}$: stored as $\textbf{blue}{\textbf{list}}$ with elements 
+    for seconds, minutes, hours, day, month, year, etc.
+* $\href{https://lubridate.tidyverse.org/}{\textbf{lubridate}}$: a very useful package for dates and times: $\newline$
+   
+
+### Examples
+
+* $\textbf{Date}$ 
+
+  ```{R,echo=TRUE,comment=''}
+  today <- Sys.Date()
+  today
+  ```
+  
+  $\newline$
+  
+  ```{R,echo=TRUE,comment=''}
+  # Attributes of Date 
+  class(today)
+  attributes(today)
+  ```
+  
+  $\newline$
+  
+  ```{R,echo=TRUE,comment=''}
+  unclass(today)
+  ```
+  
+  $\newline \newline$
+  
+  ```{R,echo=TRUE,comment=''}
+  d0 <- structure(0, class='Date')
+  d0
+  ```
+  
+  $\newline$
+  
+  ```{R,echo=TRUE,comment=''}
+  class(d0)
+  typeof(d0)
+  ```
+  
+  $\newline\newline$
+  
+  ```{R,echo=TRUE,comment=''}
+  # Convert a string into a Date
+  d1  <- as.Date("2022-01-01")
+  d1
+  ```
+  
+  $\newline$
+  
+  ```{R,echo=TRUE,comment=''}
+  class(d1)
+  typeof(d1)
+  ```
+  $\newline \newline$
+  
+* $\textbf{POSIXct}$
+
+  ```{R,echo=TRUE,comment=''}
+  # Convert a string into a POSIXct object
+  now_ct <- as.POSIXct("2018-08-01 22:00", tzone="MST")
+  now_ct
+  ```  
+  
+  $\newline$
+  
+  ```{R,echo=TRUE,comment=''}
+  attributes(now_ct)
+  typeof(now_ct)
+  ```
+  
+  $\newline$
+  
+  ```{R,echo=TRUE,comment=''}
+  # Removal of the attributes
+  attr(now_ct,"tzone") <- NULL
+  unclass(now_ct)
+  ```
+  
+# Bibliography
+
+
+  
+

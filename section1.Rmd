@@ -1,0 +1,592 @@
+---
+title: 'Introduction to R^[`r library(r2symbols) ; format(paste(symbol("copyright") , " - Wim R.M. Cardoen, 2022 - The content can neither be copied nor distributed without the **explicit** permission of the author."))`]'
+subtitle: 'Part 1: Overview of R'
+author: 'Wim R.M. Cardoen'
+date: "Last updated: `r format(Sys.time(), ' %2m/%2d/%Y @ %2H:%2M:%2S')`"
+output:
+  pdf_document:
+    highlight: tango
+    df_print: tibble
+    toc: true
+    toc_depth: 5
+    number_sections: True
+    extra_dependencies:
+    - amsfonts
+    - amsmath
+    - xcolor
+    - hyperref
+urlcolor: violet
+---
+
+\newpage
+
+# R: What's in the name?
+* Scripting language (vs. compiled language)
+* Data Analysis Environment
+
+# Why R?
+* Open Source
+* Scripting language => rapid prototyping
+* The same R-code can run on different OS (MS, MacOs, Linux)
+* Most diverse set of statistical tools
+* A lot of pre-canned [packages/libraries](https://cran.r-project.org/web/packages/)
+* Large community (and very active development)
+* Job "security" (due to its popularity) 
+  - [IEEE Top Programming Languages 2023](https://spectrum.ieee.org/the-top-programming-languages-2023)
+  - [IEEE Top Programming Languages 2022](https://spectrum.ieee.org/top-programming-languages-2022)
+  - [IEEE Top Programming Languages 2021](https://spectrum.ieee.org/top-programming-languages-2021)
+  
+
+
+## Links
+
+  * [Becker, Richard A (1994). A Brief History of S.](https://web.archive.org/web/20150723044213/http://www2.research.att.com/areas/stat/doc/94.11.ps)
+  * [Chambers, John M. (2009). Software for Data Analysis: Programming with R (Statistics and Computing)](https://www.amazon.com/Software-Data-Analysis-Programming-Statistics/dp/0387759352)
+  * [Chambers, John M. (2020). S, R, and data science.](https://dl.acm.org/doi/pdf/10.1145/3386334)
+  * [The R Project for Statistical Computing](https://www.r-project.org/)
+  * [https://www.r-bloggers.com/](https://www.r-bloggers.com/)
+  
+# Using R 
+  * interactively: **R** CLI or in an IDE. 
+  * run as a script containing R code.
+  * the cloud: e.g. [https://rstudio.cloud/](https://rstudio.cloud/)
+  
+## Links
+  * [Pre-compiled R Binaries (CRAN)](https://cran.r-project.org/)
+  * [RStudio IDE](https://posit.co/downloads/)
+  * [Latest R Source Code](https://cran.r-project.org/src/base/R-latest.tar.gz)
+
+# Getting help on R
+* Within R itself:
+  * $\textcolor{blue}{\textbf{help(cmd)}}$
+  * $\textcolor{blue}{\textbf{help(?cmd)}}$
+  * $\textcolor{blue}{\textbf{help(??cmd)}}$
+  * some keywords require quotes e.g. $\textcolor{blue}{\textbf{?'if'}}$, $\textcolor{blue}{\textbf{?'for'}}$
+  
+```{R, eval=FALSE}
+help(mean)
+?mean()
+??mean()
+?'if'
+```
+* External to the R package:
+  * [The Comprehensive R Archive Network](https://cran.r-project.org/)
+    * [An Introduction to R](https://cran.r-project.org/doc/manuals/R-intro.pdf)
+    * [R Language Definition](https://cran.r-project.org/doc/manuals/R-lang.pdf)
+  * [The Art of R Programming 
+    (Normam Matloff)](https://heather.cs.ucdavis.edu/~matloff/132/NSPpart.pdf)
+  * [Hadley Wickham's Website](https://hadley.nz/)
+  * [R-Bloggers](https://www.r-bloggers.com/)
+  * [R Mailing List](https://www.r-project.org/mail.html)
+  * [Stack Overflow (R)](https://stackoverflow.com/questions/tagged/r)
+
+# General statements on R 
+
+* R is **case-sensitive** (cfr. C, C++, Python) => 'a' is different from 'A'.
+* Symbol names/variables: letters, digits, ., _ are allowed.
+  * **must** start with a **.** (dot) or a **letter**.
+  * if symbol starts with **.** (dot), then second character **must** be a letter.
+  * can't use **reserved** keywords ( $\textcolor{blue}{\textbf{?Reserved}}$), i.e.:
+    - $\textcolor{blue}{\textbf{if, else, repeat, while, function, for, in, next, break}}$
+    - $\textcolor{blue}{\textbf{TRUE, FALSE, NULL, Inf, NaN, NA}}$ 
+    - $\textcolor{blue}{\textbf{NA\_integer\_,NA\_real\_,NA\_complex\_,NA\_character\_}}$
+  * the aforementioned rules can be overriden by the use of **backticks**, e.g.:
+    - $\textcolor{blue}{\textbf{`if`}}$
+    - $\textcolor{blue}{\textbf{`\_myvar`}}$
+* R commands are separated by:
+  * either $\textcolor{blue}{\textbf{;}}$ (semi colon).
+  * or newline.
+* R commands can be grouped together using $\textcolor{blue}{\textbf{\{\}}}$ (curly braces).   
+* R comments: start with $\textcolor{blue}{\textbf{\#}}$ (pound sign) (limited to the same line)
+* History: use **arrow up** & **arrow down** to retrieve previous cmds.
+  * <font color="blue"><b>.Rhistory</b></font>: contains the recently used R commands
+  * <font color="blue"><b>.RData</b></font>: contains the objects stored in the Global Environment
+
+\newpage
+
+$\texttt{Oefening baart kunst! ("Exercise gives birth to art!" - Dutch proverb)}$
+$\newline$
+
+# Exercises: A taste of R
+* Start R or RStudio
+* Try out the following commands in R.
+
+## Check R's version, system time and working directory
+```{R, eval=FALSE}
+print(R.version.string)
+Sys.time()
+getwd()
+```
+
+## Creation of variables - RENAME TO 'ATOMIC VARIABLES'
+* Everything in R is an object and the simplest of these objects are *atomics*. 
+* There are many types of atomics, which we will dig into in the next section, but the simplest type of atomics to describe first are *integers*. 
+
+```{R,eval=FALSE,results='asis'}
+x1 <- 5
+x1
+typeof(x1)
+ls()
+```
+
+* The first line above can be read out loud as 'x1 gets a numerical number 5.'
+
+# Atomic Data Types
+
+## The core atomic data types
+* R has the following 6 $\textcolor{blue}{\textbf{atomic}}$ data types:
+
+  * logical (i.e. boolean)
+  * integer
+  * double
+  * character (i.e. string)
+  * complex
+  * raw (i.e. byte)
+
+The latter 2 types (i.e. complex and raw) are less common.
+
+The $\textcolor{blue}{\textbf{typeof()}}$ 
+function determines the **INTERNAL** storage/type of an R object.
+
+* Lets break down each type of atomic data type below:
+
+### Examples
+
+* boolean/logical values: either $\textcolor{blue}{\textbf{TRUE}}$ or $\textcolor{blue}{\textbf{FALSE}}$
+
+```{R, echo=TRUE, comment=''}
+x1 <- TRUE
+x1
+typeof(x1)
+```
+
+$\newline$
+
+* integers are whole numbers (like 1).
+
+```{R, echo=TRUE, comment=''}
+x2 <- 3
+x2  
+typeof(x2)
+```
+
+$\newline$
+
+* double (precision) values are floating point numbers like 1.0 and 1.1:
+
+```{R, echo=TRUE, comment=""}
+x3 <- 3.14
+x3 
+typeof(x3)
+```
+
+$\newline$
+
+* character atoms are strings of letters
+* character atomics do not necessarily need to be whole words or sentences, but are instead collections of letters encapsulated with double quotes ($""$).
+
+```{R, echo=TRUE, comment=''}
+x4 <- "Hello world"
+x4
+typeof(x4)
+```
+
+$\newline$
+
+* complex numbers, such as imaginary numbers
+
+```{R, echo=TRUE, comment=''}
+x5 <- 2.0 + 3i 
+x5  
+typeof(x5)
+```
+
+\newpage
+
+## Operations on atomic data types
+* $\textbf{logical}$ operators:  $\textcolor{blue}{\textbf{==}}$, $\textcolor{blue}{\textbf{!=}}$, $\textcolor{blue}{\textbf{\&\&}}$, $\textcolor{blue}{\textbf{||}}$, $\textcolor{blue}{\textbf{!}}$
+* $\textbf{numerical}$ operators: $\textcolor{blue}{\textbf{+}}$, $\textcolor{blue}{\textbf{-}}$, $\textcolor{blue}{\textbf{*}}$, $\textcolor{blue}{\textbf{/}}$, $\textcolor{blue}{\textbf{\textasciicircum}}$, $\textcolor{blue}{\textbf{**}}$ (same as the caret), but also:
+  * integer division: $\textcolor{blue}{\textbf{\%/\%}}$
+  * modulo operation: $\textcolor{blue}{\textbf{\%\%}}$
+  * $\textcolor{orange}{\textbf{Note}}$: matrix multiplication will be performed using $\textcolor{blue}{\textbf{\%*\%}}$
+* $\textbf{character/string}$ manipulation: 
+  * $\textcolor{blue}{\textbf{nchar()}}$:
+  * $\textcolor{blue}{\textbf{paste()}}$:
+  * $\textcolor{blue}{\textbf{cat()}}$:
+  * $\textcolor{blue}{\textbf{sprintf()}}$:
+  * $\textcolor{blue}{\textbf{substr()}}$:
+  * $\textcolor{blue}{\textbf{strsplit()}}$:
+  * $\textcolor{orange}{\textbf{Note}}$: Specialized R libraries were developed to manipulate strings e.g. $\href{https://cran.r-project.org/web/packages/stringr/index.html}{stringr}$
+* explicit $\textbf{cast}$/conversion: https://data-flair.training/blogs/r-string-manipulation/
+  * $\textcolor{blue}{\textbf{as.\{logical, integer, double, complex, character\}()}}$
+* explicit $\textbf{test}$ of the type of a variable:
+  * $\textcolor{blue}{\textbf{is.\{logical, integer, double, complex, character\}()}}$
+  
+### Examples
+
+* Logical operators:
+```{R, echo=TRUE, comment=''}
+x <-3 
+y <-7
+(x<=3) &&(y==7)
+!(y<7)
+```
+ 
+$\newline$
+
+* Mathematical operations
+```{R, echo=TRUE, comment=''}
+2**4
+7%%4
+7/4
+7%/%4
+```
+ 
+$\newline$ 
+ 
+* String operations
+```{R, echo=TRUE, comment=''}
+s <- "Hello"
+nchar(s)
+news <- paste(s,"World")
+news
+sprintf("My new string:%20s\n", news)
+city <- "Witwatersrand"
+substr(city,4,8)
+```
+ 
+$\newline$ 
+
+* Conversion and testing of types
+```{R, echo=TRUE, comment=''}
+s <- "Hello World"
+is.character(s)
+```
+
+$\newline$
+
+```{R, echo=TRUE, comment=''}
+s1 <- "-500"
+is.character(s1)
+```
+
+$\newline$
+```{R, echo=TRUE, comment=''}
+s2 <- as.double(s1)
+is.character(s2)
+is.double(s2)
+```
+
+$\newline$
+```{R, echo=TRUE, comment=''}
+s3 <- as.complex(s2)
+s3
+sqrt(s3)
+```
+
+## Exercises
+
+* - Calculate $\log_2(10)$ using $\texttt{R}$'s $\textcolor{blue}{\textbf{log()}}$ function
+  - Perform the inverse operation and check that you get $10$ back
+  
+* Let $z\:= 3\,+\,4i$
+  - Use $\texttt{R}$'s $\textcolor{blue}{\textbf{Re()}}$, $\textcolor{blue}{\textbf{Im()}}$ functions to extract the real and imaginary parts of z.
+  - Calculate the modulus of $z$ using $\texttt{R}$'s $\textcolor{blue}{\textbf{Mod()}}$ function and check$\newline$ whether you the same answer 
+    using $\sqrt{ \Re(z)^2 + \Im(z)^2 }$.
+  - Calculate the argument of $z$ using $\texttt{R}$'s $\textcolor{blue}{\textbf{Arg()}}$ function and check$\newline$ 
+    whether you have the same answer using $\arctan{\Big(\frac{\Im(z)}{\Re(z)}\Big)}$.
+
+ 
+
+# Atomic vectors -- RENAME TO 'VECTORS'
+
+* We have learned about atoms and the various types of atoms, the next data type in R to understand is a *vector*.
+* All atoms are vectors, but not all vectors are atoms. The simplest example of non-atomic vectors are factors, which are described later, so do not worry about that now.
+* In this section, we will describe *Atomic Vectors*.
+
+* An $\textbf{atomic}$ vector is a data structure containing 
+elements of $\textbf{only one atomic}$ data type.\newline
+Therefore, an atomic vector is $\textbf{homogeneous}$.
+* Atomic vectors are stored in a $\textbf{linear}$ fashion.
+
+
+## Creation of atomic vectors
+Atomic vectors can be created in a multiple ways:
+
+* Use of the $\textcolor{blue}{\textbf{vector()}}$ function.
+* Use of the $\textcolor{blue}{\textbf{c()}}$ function (**c** stands for concatenate).
+* Use of the column operator $\textcolor{blue}{\textbf{:}}$
+* Use of the $\textcolor{blue}{\textbf{seq()}}$ and $\textcolor{blue}{\textbf{rep()}}$ functions.
+
+The length of a vector can be retrieved using the $\textcolor{blue}{\textbf{length()}}$ function.
+
+## Removing objects from your environment
+```{R,eval=FALSE}
+ls()
+rm(c("y1","y2","y3","y4"))
+ls()
+```
+
+```{r, echo=FALSE, results='hide'}
+# Clean up env.
+rm(list=ls())
+ls()
+```
+
+[^1]:
+'Function <font color="blue"><b>mode</b></font> gives information about the mode of an object  in the sense of Becker, Chambers & Wilks (1988), and is  more compatible with other implementations of the S language. Finally, the function <font color="blue"><b>storage.mode</b></font> returns the storage mode of its argument in the sense of Becker et al. (1988). It is generally used when calling functions written in another language, such as C or FORTRAN, to ensure that R objects have the data type expected by the routine being called. (In the S language, vectors with integer or real values are both of mode "numeric",
+so their storage modes need to be distinguished.)' [R Language Definition, v.4.1.2 (2021-11-01) p. 2](https://cran.r-project.org/doc/manuals/r-release/R-lang.pdf)
+
+
+### Examples 
+
+* use of the $\textcolor{blue}{\textbf{vector()}}$ function:
+```{R, echo=TRUE, comment=''}
+x <- vector()  # Empty vector (Default:'logical')
+x
+length(x)
+typeof(x)
+```
+
+$\newline$
+
+* use of the column operator:
+```{R, echo=TRUE, comment=''}
+y1 <- 1:10 
+y1
+y2 <- 5:-5 
+y2
+```
+
+* $\textcolor{blue}{\textbf{seq()}}$ and $\textcolor{blue}{\textbf{rep()}}$ functions
+```{R, echo=TRUE, comment=''}
+z1 <- seq(from=1, to=15, by=3)
+z1
+z2 <- seq(from=-2,to=5,length=4) 
+z2
+```
+
+$\newline$
+
+```{R, echo=TRUE, comment=''}
+z3 <- rep(c(3,2,4), time=2)
+z3
+z4 <- rep(c(1,7), each=2, time=3) 
+z4
+length(z5)
+```
+
+$\newline$
+
+
+```{R, echo=TRUE, comment=''}
+x <- vector(mode="complex", length=4) 
+x
+length(x)
+x
+x[1] <- 4
+x
+```
+
+* use of the $\textcolor{blue}{\textbf{c()}}$ function:
+```{R, echo=TRUE, comment=''}
+x1 <- c(3, 2, 5.2, 7) 
+x1
+x2 <- c(8, 12, 13) 
+x2
+x3 <- c(x2, x1) 
+x3
+x4 <- c(FALSE,TRUE,FALSE) 
+x4
+x5 <- c("Hello", "Salt", "Lake", "City") 
+x5
+```
+
+### Exercises
+
+* Use the $\textcolor{blue}{\textbf{seq()}}$ function to generate the following sequence: $\newline$
+  6 13 20 27 34 41 48
+
+* Create the following R vector using $\textbf{only}$ the $\textcolor{blue}{\textbf{seq()}}$ and $\textcolor{blue}{\textbf{rep()}}$ functions:$\newline$
+  -8 -8 -8 -8 0 8 8 8 16 16 16 16 16 
+
+
+## Operations on vectors: element-wise
+
+* All operations on vectors in R happen $\textbf{element by element}$ (cfr. $\textit{NumPy}$).
+* $\textcolor{blue}{\textbf{Vector Recycling}}$:
+
+  If 2 vectors of \textbf{different} lengths are involved in an operation, the \textbf{shortest vector} 
+  will be repeated until all elements of the longest vector are matched. \newline
+  A \textit{warning} message will be sent to the stdout.
+
+### Examples  
+```{R, echo=TRUE, comment=''}
+x <- -3:3
+x
+y <- 1:7
+y
+xy <- x*y
+xy
+xpy <- x^y
+xpy
+```
+
+$\newline$
+
+```{R, echo=TRUE, comment=''}
+x <- 0:10
+y <- 1:2
+length(x)
+length(y)
+x
+y
+x+y
+```
+
+### Exercises
+
+* Create the following vector (do $\textbf{not}$ use $\textcolor{blue}{\textbf{c()}}$!): $\newline$
+  -512  -216  -64  -8  0  8  64  216  512  1000
+
+## Retrieving elements of vectors (subsetting)
+
+* Indexing: starts at $\textbf{1}$ ($\textbf{not 0}$ like C/C++, Python, Java, ....)
+  see also: $\newline$
+  \href{https://www.cs.utexas.edu/users/EWD/ewd08xx/EWD831.PDF}{Edsger Dijkstra: Why numbering should start at zero}
+* Use of vector with indices to extract values.
+* Advanced features:
+  * use of boolean values to extract values.
+  * the membership operator: $\textcolor{blue}{\textbf{\%in\%}}$.
+  * the deselect/omit operator: $\textcolor{blue}{\textbf{-}}$ 
+  * $\textcolor{blue}{\textbf{which()}}$: returns the indices for which the condition is true.
+  * $\textcolor{blue}{\textbf{any()}}$/$\textcolor{blue}{\textbf{all()}}$ functions.
+    * $\textcolor{blue}{\textbf{any()}}$ : $\textcolor{blue}{\textbf{TRUE}}$ if at least $1$ value is true
+    * $\textcolor{blue}{\textbf{all()}}$ : $\textcolor{blue}{\textbf{TRUE}}$ if all values are true
+
+### Examples
+
+* Use of a simple index:
+```{R, echo=TRUE, comment=''}
+x <- seq(2,100,by=15)
+x
+x[4]
+x[1]
+```
+
+$\newline$
+
+* Select several indices at once using vectors:
+```{R, echo=TRUE, comment=''}
+x
+x[3:5]
+x[c(1,3,5,7)]
+x[seq(1,7,by=2)]
+```
+
+$\newline$
+
+* Extraction via booleans (i.e. retain only those values that are equal to $\textcolor{blue}{\textbf{TRUE}}$):
+```{R, echo=TRUE, comment=''}
+x
+x>45
+x[x>45]
+```
+
+$\newline$
+
+* Use of the $\textcolor{blue}{\textbf{\%in\%}}$ operator:
+```{R, echo=TRUE, comment=''}
+x
+10 %in% x
+62 %in% x
+c(32,33,43) %in% x
+!(c(32,33,43) %in% x)
+```
+
+$\newline$
+
+* Negate/filter out the elements with $\textbf{negative}$ indices:
+```{R, echo=TRUE, comment=''}
+x <- c(1,13,17,27,49,91)
+x
+x[-c(2,4,6)]
+
+z <- x[-1] - x[-length(x)]
+z
+```
+
+$\newline$
+
+* The $\textcolor{blue}{\textbf{which()}}$ function returns 
+$\textbf{only those indices}$ of which the condition/expression is \textbf{true}.
+
+```{R, echo=TRUE, comment=''}
+# Sample 10 numbers from N(0,1)
+vecnum <- rnorm(n=10)
+vecnum
+which(vecnum>1.0)
+```
+
+$\newline$
+
+* Use of the $\textcolor{blue}{\textbf{any()}}$/$\textcolor{blue}{\textbf{all()}}$ functions.
+  
+```{R, echo=TRUE, comment=''}
+y <- seq(0,100,by=10)
+x
+y
+any(x<y)
+all(x[6:7]>y[2:3])
+```
+
+### Exercises *CHANGE THESE EXERCISES TO SOMETHING ELSE*
+
+* R has the its own inversion function, $\textcolor{blue}{\textbf{rev()}}$, e.g.:$\newline$
+  ```{R, echo=TRUE,comment=''}
+  x <- seq(from=2,to=33,by=3)
+  x
+  y <- rev(x)
+  y
+  ```
+  Invert the vector x without invoking the $\textcolor{blue}{\textbf{rev()}}$ function.
+
+* The $\texttt{Taylor series}$ for $\ln(1+x)$ is converging when $|x| <1$ and is given by:
+  \begin{equation}
+     \ln(1+x)  = x-\frac{x^2}{2}+\frac{x^3}{3}-\frac{x^4}{4}+\frac{x^5}{5}-\frac{x^6}{6} +\ldots \nonumber
+  \end{equation}
+
+  Calculate the sum of the first 5, 10, 15 terms in the above expression to
+  approximate $\ln(1.2)$.
+  Compare with $\texttt{R}"'"s value i.e.: $\textcolor{blue}{\textbf{log(1.2)}}$.
+
+* The $\texttt{logarithmic}$ return in finance is defined as:
+  \begin{equation}
+      R_t = \ln \Big ( \frac{P_t}{P_{t-1}} \Big ) \nonumber
+  \end{equation}
+
+  - Generate a financial time series using the following $\texttt{R}$ code:
+  ```{R, echo=TRUE,comment='', results=FALSE }
+  price <- abs(rcauchy(1000))+1.E-6
+  ```
+  - Calculate the $\texttt{logarithmic return}$ for the financial time series $\texttt{price}$.$\newline$
+    The newly created time series will be $1$ element shorter in length than the original one.$\newline$
+    Compare your result with $\textcolor{blue}{\textbf{diff(log(price))}}$.
+
+* $\texttt{Monte-Carlo}$ approximation of $\pi$
+
+  Let $\texttt{S1}$ be the square spanned by the following $4$ vertices: $\{(0,0),(0,1),(1,0),(1,1)\}$.$\newline$
+  Let $\texttt{S2}$ be the first quadrant of the unit-circle $\mathcal{C}:\,x^2+y^2 =1$.$\newline$
+
+  The ratio $\rho$ defined as:
+  \begin{equation}
+     \rho:=\frac{\mathrm{Area\;S2}}{\mathrm{Area\;S1}}= \frac{\mathrm{\#Points\;in\;S2}}{\mathrm{\#Points\;in\;S1}} \nonumber
+  \end{equation}
+  allows us to estimate $\frac{\pi}{4}$ numerically.
+
+  Therefore:
+  - Sample $100000$ independent $x$-coordinates from $\texttt{Unif}$.
+  - Sample $100000$ independent $y$-coordinates from $\texttt{Unif}$.
+  - Calculate an approximate value for $\pi$ using the Monte-Carlo approach.
+
+  Note: The uniform distribution $[0,1)$ ($\texttt{Unif}$) can be sampled using $\textcolor{blue}{\textbf{runif()}}$.
